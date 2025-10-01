@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36408.4 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizAPI", "QuizAPI\QuizAPI.csproj", "{E60218EB-0A58-475C-9DE3-E66ABD63D4CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessObject", "BusinessObject", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{E205DF2D-9AD4-4E22-A97F-7F428BC46D8E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B9236F67-AC57-4C95-BB52-E8194843853E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quiz_Common", "Quiz_Common\Quiz_Common.csproj", "{0E1B7772-88CE-40F3-AE0A-577E03055E02}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interfaces", "Interfaces", "{66917D3B-3710-4078-847B-AC60F67B35CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quiz_Interfaces", "Quiz_Interfaces\Quiz_Interfaces.csproj", "{F8BFD8E2-22BB-4798-979B-985E0E348DEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quiz_Infrastructure", "Quiz_Contract\Quiz_Infrastructure.csproj", "{AED264F3-991B-496C-8908-EFC9F1646B67}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E60218EB-0A58-475C-9DE3-E66ABD63D4CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E60218EB-0A58-475C-9DE3-E66ABD63D4CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E60218EB-0A58-475C-9DE3-E66ABD63D4CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E60218EB-0A58-475C-9DE3-E66ABD63D4CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E1B7772-88CE-40F3-AE0A-577E03055E02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E1B7772-88CE-40F3-AE0A-577E03055E02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E1B7772-88CE-40F3-AE0A-577E03055E02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E1B7772-88CE-40F3-AE0A-577E03055E02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8BFD8E2-22BB-4798-979B-985E0E348DEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8BFD8E2-22BB-4798-979B-985E0E348DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8BFD8E2-22BB-4798-979B-985E0E348DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8BFD8E2-22BB-4798-979B-985E0E348DEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AED264F3-991B-496C-8908-EFC9F1646B67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AED264F3-991B-496C-8908-EFC9F1646B67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AED264F3-991B-496C-8908-EFC9F1646B67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AED264F3-991B-496C-8908-EFC9F1646B67}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0E1B7772-88CE-40F3-AE0A-577E03055E02} = {B9236F67-AC57-4C95-BB52-E8194843853E}
+		{F8BFD8E2-22BB-4798-979B-985E0E348DEE} = {66917D3B-3710-4078-847B-AC60F67B35CC}
+		{AED264F3-991B-496C-8908-EFC9F1646B67} = {E205DF2D-9AD4-4E22-A97F-7F428BC46D8E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54EE77E7-C6F7-41CE-83EE-D09D66D7DC47}
+	EndGlobalSection
+EndGlobal
