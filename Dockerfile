@@ -1,5 +1,5 @@
 # Sử dụng image .NET SDK để build ứng dụng
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 # Copy toàn bộ solution (bao gồm tất cả các project)
@@ -12,7 +12,7 @@ RUN dotnet restore QuizAPI/QuizAPI.csproj
 RUN dotnet publish QuizAPI/QuizAPI.csproj -c Release -o out
 
 # Sử dụng image runtime để chạy ứng dụng
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out ./
 
