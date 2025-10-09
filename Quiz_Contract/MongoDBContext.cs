@@ -19,6 +19,9 @@ namespace Quiz_Infrastructure
         }
 
         public IMongoCollection<Question> Questions => GetCollection<Question>("question");
+        public IMongoCollection<Subject> Subjects => GetCollection<Subject>("subjects");
+        public IMongoCollection<Difficulty> Difficulties => GetCollection<Difficulty>("difficulties");
+        public IMongoCollection<Class> Classes => GetCollection<Class>("classes");
 
         public MongoDBContext(IConfiguration config)
         {

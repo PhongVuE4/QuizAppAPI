@@ -11,12 +11,12 @@ namespace Quiz_Interfaces.IRepository
 {
     public interface IQuestionRepository
     {
-        Task<List<Models.Question>> GetAllQuestionsAsync();
-        Task<Models.Question> GetQuestionByIdAsync(string id);
+        Task<ServiceResult<List<QuestionResponseDTO>>> GetAllQuestionsAsync();
+        Task<ServiceResult<QuestionResponseDTO>> GetQuestionByIdAsync(string id);
         Task<ServiceResult<Question>> CreateQuestionAsync(QuestionsCreateDTO dto);
         //Task<int> CreateManyQuestionAsync(List<Models.Question> questions);
-        Task UpdateQuestionAsync(Models.Question question);
-        Task DeleteQuestionAsync(string id);
-        Task<List<Models.Question>> GetQuestionsByCategoryAsync(string category);
+        Task<ServiceResult<QuestionsUpdateDTO>> UpdateQuestionAsync(QuestionsUpdateDTO question);
+        Task<ServiceResult<Question>> DeleteQuestionAsync(string id);
+        Task<ServiceResult<List<QuestionResponseDTO >>> GetQuestionsBySubjectAsync(string subject);
     }
 }

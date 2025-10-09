@@ -1,6 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Quiz_Interfaces.DTOs.Choices;
+using Quiz_Interfaces.DTOs.Class;
+using Quiz_Interfaces.DTOs.Subject;
 using Quiz_Interfaces.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,11 @@ namespace Quiz_Interfaces.DTOs.Questions
 {
     public class QuestionsCreateDTO
     {
-        public string Category { get; set; }  // "Math", "Physics", "History", ...
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string SubjectId { get; set; }  // "Math", "Physics", "History", ...
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string ClassId { get; set; } // e.g. "Grade 10", "Grade 11"
+        [BsonRepresentation(BsonType.String)]
         public string Difficulty { get; set; } // "Easy", "Medium", "Hard"
         public string QuestionText { get; set; }
         public List<ChoiceCreateDTO> Choices { get; set; } = new();

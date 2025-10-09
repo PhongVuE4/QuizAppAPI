@@ -20,27 +20,40 @@ namespace QuizAPI.Controllers
         public async Task<IActionResult> GetAllQuestions()
         {
             var questions = await _questionRepository.GetAllQuestionsAsync();
-            return Ok(questions);
+            if (!questions.IsSuccess)
+                return BadRequest(new { error = questions.Message });
+            return Ok(questions.Data);
+        }
+        [HttpGet("questionId")]
+        public async Task<IActionResult> GetQuestionId(string id)
+        {
+            var questions = await _questionRepository.GetQuestionByIdAsync(id);
+            return StatusCode(questions.Code, questions);
+        }
+        [HttpGet("subjectName")]
+        public async Task<IActionResult> GetQuestionsBySubject(string subjectName)
+        {
+            var result = await _questionRepository.GetQuestionsBySubjectAsync(subjectName);
+            return StatusCode(result.Code, result);
         }
         [HttpPost("create")]
         public async Task<IActionResult> CreateQuestions(QuestionsCreateDTO question)
         {
             var result = await _questionRepository.CreateQuestionAsync(question);
-            if(!result.IsSuccess)
-                return BadRequest(new { error = result.Message });
-            return Ok(result.Data);
+            return StatusCode(result.Code, result);
         }
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateQuestions(Question question)
+        public async Task<IActionResult> UpdateQuestions(QuestionsUpdateDTO question)
         {
-            await _questionRepository.UpdateQuestionAsync(question);
-            return Ok();
+            var result = await _questionRepository.UpdateQuestionAsync(question);
+            return StatusCode(result.Code, result);
         }
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteQuestions(string questionId)
         {
-            await _questionRepository.DeleteQuestionAsync(questionId);
-            return Ok();
+            var result = await _questionRepository.DeleteQuestionAsync(questionId);
+            return StatusCode(result.Code, result);
         }
+        
     }
 }
