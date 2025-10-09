@@ -1,0 +1,39 @@
+# Build results
+**/[Bb]in/
+**/[Oo]bj/
+
+# Visual Studio files
+.vs/
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Debug logs
+**/*.log
+logs/
+
+# Environment files
+.env
+*.env
+
+# Dependencies
+**/node_modules/
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
