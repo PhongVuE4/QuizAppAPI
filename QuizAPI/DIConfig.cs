@@ -12,6 +12,8 @@ namespace QuizAPI
         {
             //Add Repository
             services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IClassRepository, ClassRepository>();
+            services.AddScoped<ISubjectRepository, SubjectRepository>();
 
             // Register MongoDbContext
             services.AddSingleton<MongoDBContext>(sp => new MongoDBContext(sp.GetRequiredService<IConfiguration>()));
