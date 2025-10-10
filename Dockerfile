@@ -17,8 +17,8 @@ WORKDIR /app
 COPY --from=build /app/out ./
 
 # Thiết lập biến môi trường cho ASP.NET Core
-ENV ASPNETCORE_URLS=http://+:5000
-EXPOSE 5000
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
 
 # Lệnh khởi chạy ứng dụng
 ENTRYPOINT ["dotnet", "QuizAPI.dll"]
