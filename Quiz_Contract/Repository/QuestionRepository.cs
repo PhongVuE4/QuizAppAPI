@@ -130,10 +130,6 @@ namespace Quiz_Infrastructure.Repository
             }
             
         }
-        //public async Task<int> CreateManyQuestionAsync(List<Question> questions)
-        //{
-
-        //}
         public async Task<ServiceResult<QuestionsUpdateDTO>> UpdateQuestionAsync(QuestionsUpdateDTO questionDTO)
         {
             if (questionDTO == null || string.IsNullOrEmpty(questionDTO.Id))
