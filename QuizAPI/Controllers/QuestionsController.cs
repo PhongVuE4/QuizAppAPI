@@ -36,6 +36,12 @@ namespace QuizAPI.Controllers
             var result = await _questionRepository.GetQuestionsBySubjectAsync(subjectName);
             return StatusCode(result.Code, result);
         }
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetQuestionsByFilter([FromQuery] string? classLevel, string? subject)
+        {
+            var result = await _questionRepository.GetQuestionsByClassandSubjectAsync(classLevel, subject);
+            return StatusCode(result.Code, result);
+        }
         [HttpPost("create")]
         public async Task<IActionResult> CreateQuestions(QuestionsCreateDTO question)
         {

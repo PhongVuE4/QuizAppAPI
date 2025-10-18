@@ -13,6 +13,7 @@ namespace Quiz_Interfaces.IRepository
     {
         Task<ServiceResult<List<QuestionResponseDTO>>> GetAllQuestionsAsync();
         Task<ServiceResult<QuestionResponseDTO>> GetQuestionByIdAsync(string id);
+        Task<ServiceResult<List<QuestionResponseDTO>>> GetQuestionsByClassandSubjectAsync(string? classLevel, string? subject);
         Task<ServiceResult<Question>> CreateQuestionAsync(QuestionsCreateDTO dto);
         //Task<int> CreateManyQuestionAsync(List<Models.Question> questions);
         Task<ServiceResult<QuestionsUpdateDTO>> UpdateQuestionAsync(QuestionsUpdateDTO question);

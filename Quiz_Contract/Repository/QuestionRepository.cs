@@ -86,6 +86,42 @@ namespace Quiz_Infrastructure.Repository
             var questionReponse = BsonSerializer.Deserialize<QuestionResponseDTO>(result);
             return ServiceResult<QuestionResponseDTO>.Success(questionReponse,"Thành công", code: 200);
         }
+        public async Task<ServiceResult<List<QuestionResponseDTO>>> GetQuestionsByClassandSubjectAsync(string? classLevel, string? subject)
+        {
+            var builder = Builders<Question>.Filter;
+            var filters =  new List<FilterDefinition<Question>>();
+
+            if (string.IsNullOrWhiteSpace(classLevel))
+                filters.Add(builder.Eq(a => a.ClassId, classLevel));
+            if (string.IsNullOrWhiteSpace(subject))
+                filters.Add(builder.Eq(a => a.SubjectId, subject));
+            filters.Add(builder.Eq(a => a.IsActive, true));
+            if (filters == null || !filters.Any())
+                return ServiceResult<List<QuestionResponseDTO>>.Failure("Cần chọn 'Môn học' hoặc 'Lớp học'", code: 400);
+            var filerFinal = builder.Or(filters);
+            var pipeline = _questions.Aggregate().Match(filerFinal)
+                                                .Lookup("subjects", "SubjectId", "_id", "SubjectData")
+                                                .Lookup("classes", "ClassId", "_id", "ClassData")
+                                                .Project(new BsonDocument
+                                                {
+                                                    { "_id", 0 },
+                                                    { "QuestionId", new BsonDocument("$toString", "$_id")},// map _id -> QuestionId (chuỗi)
+                                                    { "QuestionText", 1 },
+                                                    { "Difficulty", 1 },
+                                                    { "Choices", 1 },
+                                                    { "Explanation", 1 },
+                                                    { "Tags", 1 },
+                                                    { "Subject", new BsonDocument("$arrayElemAt", new BsonArray { "$SubjectData.SubjectName", 0 }) },
+                                                    { "Class", new BsonDocument("$arrayElemAt", new BsonArray { "$ClassData.Classlevel", 0 }) }
+                                                });
+            var results = await pipeline.ToListAsync();
+            if (results == null || !results.Any())
+            {
+                return ServiceResult<List<QuestionResponseDTO>>.Failure("Không có câu hỏi nào", code: 404);
+            }
+            var questionReponses = results.Select(a => BsonSerializer.Deserialize<QuestionResponseDTO>(a)).ToList();
+            return ServiceResult<List<QuestionResponseDTO>>.Success(questionReponses, "Thành công", code: 200);
+        }
         public async Task<ServiceResult<Question>> CreateQuestionAsync(QuestionsCreateDTO dto)
         {
             if(dto == null)
