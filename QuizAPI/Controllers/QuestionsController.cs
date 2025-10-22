@@ -16,7 +16,7 @@ namespace QuizAPI.Controllers
             _questionRepository = questionRepository;
         }
 
-        [HttpGet("questions")]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllQuestions()
         {
             var questions = await _questionRepository.GetAllQuestionsAsync();
@@ -46,6 +46,12 @@ namespace QuizAPI.Controllers
         public async Task<IActionResult> CreateQuestions(QuestionsCreateDTO question)
         {
             var result = await _questionRepository.CreateQuestionAsync(question);
+            return StatusCode(result.Code, result);
+        }
+        [HttpPost("createmany")]
+        public async Task<IActionResult> CreateManyQuestions(List<QuestionsCreateDTO> questions)
+        {
+            var result = await _questionRepository.CreateManyQuestionAsync(questions);
             return StatusCode(result.Code, result);
         }
         [HttpPut("update")]

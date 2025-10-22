@@ -174,6 +174,76 @@ namespace Quiz_Infrastructure.Repository
             }
             
         }
+        public async Task<ServiceResult<List<Question>>> CreateManyQuestionAsync(List<QuestionsCreateDTO> createDTOs)
+        {
+            if(createDTOs == null || !createDTOs.Any())
+            {
+                return ServiceResult<List<Question>>.Failure("Dữ liệu null hoặc rỗng", code: 400);
+            }
+            var validQuestions = new List<Question>();
+            var errors = new List<string>();
+
+            foreach (var questions in createDTOs)
+            {
+                if(questions == null)
+                {
+                    errors.Add("Một trong các câu hỏi bị null.");
+                    continue;
+                }
+                if(string.IsNullOrWhiteSpace(questions.QuestionText))
+                {
+                    errors.Add($"QuestionText không được để trống. {questions.QuestionText}");
+                    continue;
+                }
+                if(questions.Choices == null || !questions.Choices.Any())
+                {
+                    errors.Add($"Choices không được để trống. {questions.QuestionText}");
+                    continue;
+                }
+                if(questions.Choices.Count(c => c.IsCorrect) == 0)
+                {
+                    errors.Add($"Phải có một đáp án đúng. {questions.QuestionText}");
+                    continue;
+                }
+                if((questions.Choices.Count(a => a.IsCorrect) < 1))
+                {
+                    errors.Add($"Chỉ được có một đáp án đúng. {questions.QuestionText}");
+                    continue;
+                }
+                if(questions.Choices.Count() < 2)
+                {
+                    errors.Add($"Mỗi câu hỏi phải có ít nhất hai lựa chọn. {questions.QuestionText}");
+                    continue;
+                }
+                validQuestions.Add(_mapper.Map<Question>(questions));
+            }
+            if(errors.Any())
+            {
+                var errorMessage = string.Join("; ", errors);
+                return ServiceResult<List<Question>>.Failure("Lỗi dữ liệu: " + errorMessage, code: 400);
+            }
+
+            if(!validQuestions.Any())
+                return ServiceResult<List<Question>>.Failure("Không có câu hỏi hợp lệ." + string.Join("; ", errors), code: 400);
+
+            try
+            {
+                await _questions.InsertManyAsync(validQuestions);
+                string message = $"Tạo {validQuestions.Count} câu hỏi thành công.";
+                if(errors.Any())
+                    message += $" Có lỗi với một số câu hỏi: {string.Join("; ", errors)}";
+
+                return ServiceResult<List<Question>>.Success(validQuestions, message, code: 200);
+            }
+            catch (MongoWriteException ex)
+            {
+                return ServiceResult<List<Question>>.Failure("Database write error: " + ex.Message, code: 503);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<List<Question>>.Failure("Lỗi không xác định: " + ex.Message, code: 500);
+            }
+        }
         public async Task<ServiceResult<QuestionsUpdateDTO>> UpdateQuestionAsync(QuestionsUpdateDTO questionDTO)
         {
             if (questionDTO == null || string.IsNullOrEmpty(questionDTO.Id))
