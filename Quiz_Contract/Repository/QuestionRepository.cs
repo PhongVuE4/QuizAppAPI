@@ -120,6 +120,14 @@ namespace Quiz_Infrastructure.Repository
                 return ServiceResult<List<QuestionResponseDTO>>.Failure("Không có câu hỏi nào", code: 404);
             }
             var questionReponses = results.Select(a => BsonSerializer.Deserialize<QuestionResponseDTO>(a)).ToList();
+
+            var random = new Random();
+            questionReponses = questionReponses.OrderBy(x => random.Next()).ToList();
+
+            foreach (var question in questionReponses)
+            {
+                question.Choices = question.Choices.OrderBy(x => random.Next()).ToList();
+            }
             return ServiceResult<List<QuestionResponseDTO>>.Success(questionReponses, "Thành công", code: 200);
         }
         public async Task<ServiceResult<Question>> CreateQuestionAsync(QuestionsCreateDTO dto)
