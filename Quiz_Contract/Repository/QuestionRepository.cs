@@ -156,6 +156,13 @@ namespace Quiz_Infrastructure.Repository
             {
                 return ServiceResult<Question>.Failure("Mỗi câu hỏi phải có ít nhất hai lựa chọn.", code: 400);
             }
+
+            var existed = await _questions.Find(a => a.SubjectId == dto.SubjectId
+                                            && a.ClassId == dto.ClassId && a.QuestionText.ToLower() == dto.QuestionText.ToLower() && a.IsActive).FirstOrDefaultAsync();
+
+            if(existed != null)
+                return ServiceResult<Question>.Failure("Câu hỏi đã tồn tại", code: 409);
+
             var question = _mapper.Map<Question>(dto);
             try
             {
@@ -182,8 +189,16 @@ namespace Quiz_Infrastructure.Repository
             }
             var validQuestions = new List<Question>();
             var errors = new List<string>();
+            var duplicatesInRequest = new List<string>();
+            var duplicateInDB = new List<string>();
 
-            foreach (var questions in createDTOs)
+            var distinctDTOs = createDTOs.GroupBy(a => (a.SubjectId.Trim(), a.ClassId.Trim(), a.QuestionText.Trim().ToLower()))
+                                            .Select(g => g.First()).ToList();
+
+            if(distinctDTOs.Count < createDTOs.Count)
+                duplicatesInRequest.Add($"Đã bỏ qua {createDTOs.Count - distinctDTOs.Count} câu hỏi trùng trong file upload.");
+
+            foreach (var questions in distinctDTOs)
             {
                 if(questions == null)
                 {
@@ -205,7 +220,7 @@ namespace Quiz_Infrastructure.Repository
                     errors.Add($"Phải có một đáp án đúng. {questions.QuestionText}");
                     continue;
                 }
-                if((questions.Choices.Count(a => a.IsCorrect) < 1))
+                if((questions.Choices.Count(a => a.IsCorrect) > 1))
                 {
                     errors.Add($"Chỉ được có một đáp án đúng. {questions.QuestionText}");
                     continue;
@@ -226,11 +241,45 @@ namespace Quiz_Infrastructure.Repository
             if(!validQuestions.Any())
                 return ServiceResult<List<Question>>.Failure("Không có câu hỏi hợp lệ." + string.Join("; ", errors), code: 400);
 
+            // 🧠 3️⃣ Kiểm tra trùng trong DB
+            var questionTexts = validQuestions.Select(q => q.QuestionText.Trim().ToLower()).ToList();
+            var subjectIds = validQuestions.Select(q => q.SubjectId).Distinct().ToList();
+            var classIds = validQuestions.Select(q => q.ClassId).Distinct().ToList();
+
+            var existing = await _questions.Find(q =>
+                subjectIds.Contains(q.SubjectId) &&
+                classIds.Contains(q.ClassId) &&
+                questionTexts.Contains(q.QuestionText.ToLower())
+                && q.IsActive
+            ).ToListAsync();
+
+            if (existing.Any())
+            {
+                duplicateInDB.AddRange(existing.Select(e =>
+                    $"[Trùng trong DB] {e.QuestionText} (Môn {e.SubjectId}, Lớp {e.ClassId})"
+                ));
+
+                // Loại bỏ trùng trong DB trước khi insert
+                validQuestions = validQuestions.Where(q =>
+                    !existing.Any(e =>
+                        e.SubjectId == q.SubjectId &&
+                        e.ClassId == q.ClassId &&
+                        e.QuestionText.Trim().ToLower() == q.QuestionText.Trim().ToLower()
+                    )).ToList();
+            }
+
+            if (!validQuestions.Any())
+                return ServiceResult<List<Question>>.Failure("Tất cả câu hỏi đều bị trùng trong DB.", code: 409);
+
             try
             {
                 await _questions.InsertManyAsync(validQuestions);
                 string message = $"Tạo {validQuestions.Count} câu hỏi thành công.";
-                if(errors.Any())
+                if (duplicatesInRequest.Any())
+                    message += $" {string.Join("; ", duplicatesInRequest)}";
+                if (duplicateInDB.Any())
+                    message += $" Có {duplicateInDB.Count} câu hỏi bị trùng trong DB: {string.Join("; ", duplicateInDB)}";
+                if (errors.Any())
                     message += $" Có lỗi với một số câu hỏi: {string.Join("; ", errors)}";
 
                 return ServiceResult<List<Question>>.Success(validQuestions, message, code: 200);

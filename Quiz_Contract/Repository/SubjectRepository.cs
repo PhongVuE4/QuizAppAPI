@@ -24,7 +24,7 @@ namespace Quiz_Infrastructure.Repository
         }
         public async Task<ServiceResult<List<SubjectReponseDTO>>> GetAllSubjectsAsync()
         {
-            var subjects = await _subjects.Find(_ => true).ToListAsync();
+            var subjects = await _subjects.Find(a => a.IsActive).ToListAsync();
             var result = _mapper.Map<List<SubjectReponseDTO>>(subjects);
             if (result == null || !result.Any())
             {
@@ -55,7 +55,7 @@ namespace Quiz_Infrastructure.Repository
             {
                 return ServiceResult<Subject>.Failure("SubjectName không được để trống.", code: 400);
             }
-            var existingSubject = await _subjects.Find(s => s.SubjectName.ToLower() == subject.SubjectName.ToLower()).FirstOrDefaultAsync();
+            var existingSubject = await _subjects.Find(s => s.SubjectName.ToLower() == subject.SubjectName.ToLower() && s.IsActive).FirstOrDefaultAsync();
             if (existingSubject != null)
             {
                 return ServiceResult<Subject>.Failure("Môn học đã tồn tại.", code: 400);
@@ -93,7 +93,7 @@ namespace Quiz_Infrastructure.Repository
             }
             if (!string.IsNullOrWhiteSpace(subject.SubjectName))
             {
-                var duplicateSubject = await _subjects.Find(s => s.SubjectName.ToLower() == subject.SubjectName.ToLower() && s.SubjectId != subject.SubjectId).FirstOrDefaultAsync();
+                var duplicateSubject = await _subjects.Find(s => s.SubjectName.ToLower() == subject.SubjectName.ToLower() && s.SubjectId != subject.SubjectId && s.IsActive).FirstOrDefaultAsync();
                 if (duplicateSubject != null)
                 {
                     return ServiceResult<Subject>.Failure("Môn học đã tồn tại.", code: 400);
