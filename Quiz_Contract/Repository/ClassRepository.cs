@@ -23,7 +23,7 @@ namespace Quiz_Infrastructure.Repository
         }
         public async Task<ServiceResult<List<Class>>> GetAllClassesAsync()
         {
-            var classes = await _classes.Find(_ => true).ToListAsync();
+            var classes = await _classes.Find(a => a.IsActive).ToListAsync();
             if(classes == null || !classes.Any())
             {
                 return ServiceResult<List<Class>>.Success(classes, "Danh sách lớp trống", code: 404);
@@ -37,7 +37,7 @@ namespace Quiz_Infrastructure.Repository
             if (string.IsNullOrEmpty(createClass.Classlevel))
                 return ServiceResult<Class>.Failure("Tên lớp không được rỗng", code: 400);
             createClass.Classlevel = createClass.Classlevel.Trim();
-            var existed = await _classes.Find(a => a.Classlevel.ToLower() == createClass.Classlevel.ToLower()).FirstOrDefaultAsync();
+            var existed = await _classes.Find(a => a.Classlevel.ToLower() == createClass.Classlevel.ToLower() && a.IsActive).FirstOrDefaultAsync();
             if (existed != null)
                 return ServiceResult<Class>.Failure("Lớp đã tồn tại", code: 400);
             var newClass =  _mapper.Map<Class>(createClass);
@@ -65,7 +65,7 @@ namespace Quiz_Infrastructure.Repository
             if (string.IsNullOrWhiteSpace(updateClass.Classlevel))
                 return ServiceResult<ClassUpdateDTO>.Failure("Tên lớp không được rỗng", code: 400);
             updateClass.Classlevel = updateClass.Classlevel.Trim();
-            var existingClass = await _classes.Find(c => c.Classlevel.ToLower() == updateClass.Classlevel.ToLower() && c.ClassId != updateClass.ClassId).FirstOrDefaultAsync();
+            var existingClass = await _classes.Find(c => c.Classlevel.ToLower() == updateClass.Classlevel.ToLower() && c.ClassId != updateClass.ClassId && c.IsActive).FirstOrDefaultAsync();
             if (existingClass != null)
                 return ServiceResult<ClassUpdateDTO>.Failure("Lớp đã tồn tại", code: 400);
             var classToUpdate = await _classes.Find(c => c.ClassId == updateClass.ClassId).FirstOrDefaultAsync();
